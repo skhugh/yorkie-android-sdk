@@ -46,7 +46,7 @@ jobs:
     strategy:
       matrix:
         api-level: [ 23, 26, 28 ]
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-java@v3
