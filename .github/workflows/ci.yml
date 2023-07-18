@@ -56,7 +56,7 @@ jobs:
           cache: gradle
       - run: chmod +x gradlew
       - uses: gradle/gradle-build-action@v2
-      - run: docker-compose -f docker/docker-compose-ci.yml up --build -d
+#      - run: docker-compose -f docker/docker-compose-ci.yml up --build -d
       - uses: actions/cache@v3
         id: avd-cache
         with:
