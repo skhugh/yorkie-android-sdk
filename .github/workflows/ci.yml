@@ -65,24 +65,26 @@ jobs:
             ~/.android/adb*
           key: avd-${{ matrix.api-level }}-x86_64-8192m
       - if: steps.avd-cache.outputs.cache-hit != 'true'
-        uses: reactivecircus/android-emulator-runner@v2.27.0
+        uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
           target: google_apis
           arch: x86_64
           force-avd-creation: false
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          ram-size: 8192M
+          ram-size: 4096M
+          emulator-boot-timeout: 12000
           disable-animations: false
           script: echo "Generated AVD snapshot for caching."
-      - uses: reactivecircus/android-emulator-runner@v2.27.0
+      - uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
           target: google_apis
           arch: x86_64
           force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          ram-size: 8192M
+          ram-size: 4096M
+          emulator-boot-timeout: 12000
           disable-animations: true
           script: |
             adb shell pm list packages | grep dev.yorkie.test && adb uninstall dev.yorkie.test || true;
@@ -124,24 +126,26 @@ jobs:
             ~/.android/adb*
           key: avd-28-x86_64-8192m
       - if: steps.avd-cache.outputs.cache-hit != 'true'
-        uses: reactivecircus/android-emulator-runner@v2.27.0
+        uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 28
           target: google_apis
           arch: x86_64
           force-avd-creation: false
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          ram-size: 8192M
+          ram-size: 4096M
+          emulator-boot-timeout: 12000
           disable-animations: false
           script: echo "Generated AVD snapshot for caching."
-      - uses: reactivecircus/android-emulator-runner@v2.27.0
+      - uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 28
           target: google_apis
           arch: x86_64
           force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          ram-size: 8192M
+          ram-size: 4096M
+          emulator-boot-timeout: 12000
           disable-animations: true
           script: |
             ./gradlew microbenchmark:assembleReleaseAndroidTest;
