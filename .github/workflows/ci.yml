@@ -45,8 +45,8 @@ jobs:
     name: Instrumentation tests
     strategy:
       matrix:
-        api-level: [ 32 ]
-        target: [ default ]
+        api-level: [ 28 ]
+        target: [ google_apis ]
     runs-on: macos-13
     steps:
       - uses: actions/checkout@v3
@@ -91,7 +91,7 @@ jobs:
           ram-size: 4096M
           emulator-boot-timeout: 12000
           disable-animations: true
-          script: ./gradlew yorkie:connectedDebugAndroidTest
+          script: ./gradlew yorkie:connectedCheck
       - uses: actions/upload-artifact@v3
         with:
           name: android-test-artifact
