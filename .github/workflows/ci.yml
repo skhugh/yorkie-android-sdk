@@ -46,7 +46,7 @@ jobs:
     strategy:
       matrix:
         api-level: [ 24, 26, 28 ]
-        target: [ google_apis ]
+        target: [ default ]
     runs-on: macos-13
     steps:
       - uses: actions/checkout@v3
@@ -127,12 +127,12 @@ jobs:
           path: |
             ~/.android/avd/*
             ~/.android/adb*
-          key: avd-28-google_apis-x86_64
+          key: avd-28-default-x86_64
       - if: steps.avd-cache.outputs.cache-hit != 'true'
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 28
-          target: google_apis
+          target: default
           arch: x86_64
           force-avd-creation: false
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
@@ -143,7 +143,7 @@ jobs:
       - uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 28
-          target: google_apis
+          target: default
           arch: x86_64
           force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
