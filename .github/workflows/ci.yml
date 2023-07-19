@@ -45,7 +45,7 @@ jobs:
     name: Instrumentation tests
     strategy:
       matrix:
-        api-level: [ 23, 26, 28 ]
+        api-level: [ 24, 28, 30 ]
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
@@ -126,11 +126,11 @@ jobs:
           path: |
             ~/.android/avd/*
             ~/.android/adb*
-          key: avd-28-google_apis-x86_64
+          key: avd-30-google_apis-x86_64
       - if: steps.avd-cache.outputs.cache-hit != 'true'
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 28
+          api-level: 30
           target: google_apis
           arch: x86_64
           force-avd-creation: false
@@ -141,7 +141,7 @@ jobs:
           script: echo "Generated AVD snapshot for caching."
       - uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 28
+          api-level: 30
           target: google_apis
           arch: x86_64
           force-avd-creation: false
