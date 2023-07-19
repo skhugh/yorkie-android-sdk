@@ -45,7 +45,7 @@ jobs:
     name: Instrumentation tests
     strategy:
       matrix:
-        api-level: [ 27 ]
+        api-level: [ 31 ]
         target: [ google_apis ]
     runs-on: macos-13
     steps:
