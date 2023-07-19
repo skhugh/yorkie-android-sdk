@@ -15,7 +15,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           java-version: '17'
-          distribution: 'temurin'
+          distribution: 'zulu'
           cache: gradle
       - run: chmod +x gradlew
       - uses: gradle/gradle-build-action@v2
@@ -30,7 +30,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           java-version: '17'
-          distribution: 'temurin'
+          distribution: 'zulu'
           cache: gradle
       - run: chmod +x gradlew
       - uses: gradle/gradle-build-action@v2
@@ -53,7 +53,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           java-version: '17'
-          distribution: 'temurin'
+          distribution: 'zulu'
           cache: gradle
       - run: chmod +x gradlew
       - uses: gradle/gradle-build-action@v2
@@ -117,7 +117,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           java-version: '17'
-          distribution: 'temurin'
+          distribution: 'zulu'
           cache: gradle
       - run: chmod +x gradlew
       - uses: gradle/gradle-build-action@v2
