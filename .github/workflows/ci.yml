@@ -45,8 +45,8 @@ jobs:
     name: Instrumentation tests
     strategy:
       matrix:
-        api-level: [ 33 ]
-        target: [ google_apis ]
+        api-level: [ 28 ]
+        target: [ default ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
