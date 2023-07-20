@@ -15,7 +15,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           java-version: '17'
-          distribution: 'zulu'
+          distribution: 'temurin'
           cache: gradle
       - run: chmod +x gradlew
       - uses: gradle/gradle-build-action@v2
@@ -30,7 +30,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           java-version: '17'
-          distribution: 'zulu'
+          distribution: 'temurin'
           cache: gradle
       - run: chmod +x gradlew
       - uses: gradle/gradle-build-action@v2
@@ -45,7 +45,7 @@ jobs:
     name: Instrumentation tests
     strategy:
       matrix:
-        api-level: [ 26 ]
+        api-level: [ 27 ]
         target: [ default ]
     runs-on: ubuntu-latest
     steps:
@@ -53,7 +53,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           java-version: '17'
-          distribution: 'zulu'
+          distribution: 'temurin'
           cache: gradle
       - run: chmod +x gradlew
       - uses: gradle/gradle-build-action@v2
@@ -63,9 +63,9 @@ jobs:
           api-level: ${{ matrix.api-level }}
           target: ${{ matrix.target }}
           arch: x86_64
-          force-avd-creation: true
+          force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          ram-size: 4096M
+          ram-size: 8192M
           emulator-boot-timeout: 12000
           disable-animations: true
           emulator-build: 6061023
