@@ -45,8 +45,9 @@ jobs:
     name: Instrumentation tests
     strategy:
       matrix:
-        api-level: [ 23, 26, 28 ]
-    runs-on: ubuntu-latest
+        api-level: [ 23, 27, 32 ]
+        target: [ google_apis ]
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-java@v3
@@ -56,6 +57,9 @@ jobs:
           cache: gradle
       - run: chmod +x gradlew
       - uses: gradle/gradle-build-action@v2
+      - name: Setup Docker on macOS using Colima, Lima-VM, and Homebrew.
+        uses: yorkie-team/yorkie-ios-sdk/action.yml@main
+        id: docker
       - run: docker-compose -f docker/docker-compose-ci.yml up --build -d
       - uses: actions/cache@v3
         id: avd-cache
@@ -63,32 +67,34 @@ jobs:
           path: |
             ~/.android/avd/*
             ~/.android/adb*
-          key: avd-${{ matrix.api-level }}-x86_64-8192m
+          key: avd-${{ matrix.api-level }}-${{ matrix.target }}-x86_64-8192m
       - if: steps.avd-cache.outputs.cache-hit != 'true'
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
+          target: ${{ matrix.target }}
           arch: x86_64
           force-avd-creation: false
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           ram-size: 8192M
+          emulator-boot-timeout: 12000
           disable-animations: false
           script: echo "Generated AVD snapshot for caching."
       - uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
+          target: ${{ matrix.target }}
           arch: x86_64
           force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           ram-size: 8192M
+          emulator-boot-timeout: 12000
           disable-animations: true
-          script: |
-            adb shell pm list packages | grep dev.yorkie.test && adb uninstall dev.yorkie.test || true;
-            ./gradlew yorkie:createDebugAndroidTestCoverageReport
+          script: ./gradlew yorkie:connectedCheck
       - uses: actions/upload-artifact@v3
         with:
           name: android-test-artifact
-          path: yorkie/build/reports/coverage/androidTest/debug/connected/report.xml
+          path: yorkie/build/reports/coverage/androidTest/debug/connected/index.html
 
   codecov:
     name: Codecov
@@ -104,7 +110,9 @@ jobs:
 
   microbenchmarks:
     name: Microbenchmarks
-    runs-on: ubuntu-latest
+    if: ${{ always() }}
+    needs: instrumentation-tests
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-java@v3
@@ -120,11 +128,12 @@ jobs:
           path: |
             ~/.android/avd/*
             ~/.android/adb*
-          key: avd-28-x86_64-8192m
+          key: avd-32-google_apis-x86_64-8192m
       - if: steps.avd-cache.outputs.cache-hit != 'true'
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 28
+          api-level: 32
+          target: google_apis
           arch: x86_64
           force-avd-creation: false
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
@@ -133,7 +142,8 @@ jobs:
           script: echo "Generated AVD snapshot for caching."
       - uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 28
+          api-level: 32
+          target: google_apis
           arch: x86_64
           force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
