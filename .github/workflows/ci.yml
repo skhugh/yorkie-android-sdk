@@ -57,7 +57,10 @@ jobs:
           cache: gradle
       - run: chmod +x gradlew
       - uses: gradle/gradle-build-action@v2
-#      - run: docker-compose -f docker/docker-compose-ci.yml up --build -d
+      - name: Setup Docker on macOS using Colima, Lima-VM, and Homebrew.
+        uses: ./ # Uses an action in the root directory
+        id: docker
+      - run: docker-compose -f docker/docker-compose-ci.yml up --build -d
       - uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
