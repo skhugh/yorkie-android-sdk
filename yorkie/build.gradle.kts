@@ -32,6 +32,7 @@ tasks.register<JacocoReport>("jacocoDebugTestReport") {
             include(
                 "jacoco/testDebugUnitTest.exec",
                 "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec",
+                "outputs/code_coverage/debugAndroidTest/connected/**/coverage.ec",
             )
         },
     )
