@@ -68,7 +68,6 @@ jobs:
           ram-size: 8192M
           emulator-boot-timeout: 12000
           disable-animations: true
-          emulator-build: 6061023
           script: ./gradlew yorkie:connectedCheck
       - uses: actions/upload-artifact@v3
         with:
