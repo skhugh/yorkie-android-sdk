@@ -94,7 +94,8 @@ jobs:
           emulator-boot-timeout: 12000
           disable-animations: true
           script: ./gradlew yorkie:connectedCheck
-      - uses: actions/upload-artifact@v3
+      - if: ${{ matrix.api-level == 31 }}
+        uses: actions/upload-artifact@v3
         with:
           name: android-test-artifact
           path: yorkie/build/reports/coverage/androidTest/debug/connected/index.html
