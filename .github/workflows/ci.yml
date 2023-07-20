@@ -45,7 +45,7 @@ jobs:
     name: Instrumentation tests
     strategy:
       matrix:
-        api-level: [ 28 ]
+        api-level: [ 26 ]
         target: [ default ]
     runs-on: ubuntu-latest
     steps:
