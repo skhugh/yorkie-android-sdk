@@ -23,7 +23,15 @@ tasks.register<JacocoReport>("jacocoDebugTestReport") {
 
     classDirectories.setFrom(
         fileTree("${buildDir}/tmp/kotlin-classes/debug") {
-            exclude("**/dev/yorkie/api/v1/**")
+            exclude(
+                "**/dev/yorkie/api/v1/**",
+                "**/R.class",
+                "**/R$*.class",
+                "**/BuildConfig.*",
+                "**/Manifest*.*",
+                "**/*Test*.*",
+                "android/**/*.*",
+            )
         },
     )
     sourceDirectories.setFrom("${project.projectDir}/src/main/kotlin")
