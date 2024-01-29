@@ -12,6 +12,9 @@ import dev.yorkie.document.Document.Event.RemoteChange
 import dev.yorkie.document.change.CheckPoint
 import dev.yorkie.document.json.JsonCounter
 import dev.yorkie.document.json.JsonPrimitive
+import dev.yorkie.document.json.JsonTree
+import dev.yorkie.document.json.TreeBuilder.element
+import dev.yorkie.document.json.TreeBuilder.text
 import dev.yorkie.document.operation.OperationInfo
 import java.util.UUID
 import kotlin.test.assertContentEquals
@@ -21,10 +24,12 @@ import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
@@ -524,6 +529,54 @@ class ClientTest {
 
             document.close()
             client.close()
+        }
+    }
+
+    @Test
+    fun test_multiple_clients_working_on_same_document_rapidly() {
+        val input1 = listOf("a", "b", "c", "d", "e", "f", "g", "h", "i", "j")
+        val input2 = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "0")
+
+        withTwoClientsAndDocuments { client1, client2, document1, document2, key ->
+            document1.updateAsync { root, _ ->
+                root.setNewTree("tree", element("t") { text { "" } })
+            }.await()
+
+            delay(500)
+
+            listOf(
+                launch {
+                    repeat(10) {
+                        input1.map {
+                            document1.updateAsync { root, _ ->
+                                root.getAs<JsonTree>("tree").editByPath(
+                                    listOf(0, 1),
+                                    listOf(0, 1),
+                                    text { it },
+                                )
+                            }
+                        }.awaitAll()
+                    }
+                },
+                launch {
+                    repeat(10) {
+                        input2.map {
+                            document2.updateAsync { root, _ ->
+                                root.getAs<JsonTree>("tree").editByPath(
+                                    listOf(0, 1),
+                                    listOf(0, 1),
+                                    text { it },
+                                )
+                            }
+                        }.awaitAll()
+                    }
+                },
+            ).joinAll()
+
+            assertEquals(
+                document1.getRoot().getAs<JsonTree>("tree").toJson(),
+                document2.getRoot().getAs<JsonTree>("tree").toJson(),
+            )
         }
     }
 }
