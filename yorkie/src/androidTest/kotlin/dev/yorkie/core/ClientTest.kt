@@ -565,6 +565,10 @@ class ClientTest {
             assertIs<RemoteChange>(d2Events.first())
             assertTreesXmlEquals("<doc><p>12</p><p>34</p></doc>", d1, d2)
 
+            // In push-only mode, remote-change events should not occur.
+            d2Events.clear()
+            c2.pauseRemoteChanges(d2)
+
             d1.updateAsync { root, _ ->
                 root.rootTree().edit(2, 2, text { "a" })
             }.await()
@@ -574,14 +578,12 @@ class ClientTest {
             // but a response has not yet been received.
             c2.syncAsync().await()
 
-            // In push-only mode, remote-change events should not occur.
-            d2Events.clear()
-            c2.pauseRemoteChanges(d2)
-
             delay(100) // Keep the push-only state.
             assertTrue(d2Events.none { it is RemoteChange })
 
             c2.resumeRemoteChanges(d2)
+            delay(100)
+            assertTrue { d2Events.any { it is RemoteChange } }
 
             d2.updateAsync { root, _ ->
                 root.rootTree().edit(2, 2, text { "b" })
